@@ -1,0 +1,21 @@
+meta {
+  name: register
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/api/auth/create-account
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "firstName": "Fatime",
+    "lastName": "Sevilgen",
+    "email": "fatime.sevilgen3@example.com",
+    "password": "fatime.sevilgen0",
+    "birthDate": "2003-01-28"
+  }
+}

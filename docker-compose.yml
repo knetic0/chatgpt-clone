@@ -1,0 +1,22 @@
+version: '3'
+services:
+  server:
+    build: ./server
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+  client:
+    build: ./client
+    ports:
+      - "5173:5173"
+  postgres:
+    image: postgres:13-alpine
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
