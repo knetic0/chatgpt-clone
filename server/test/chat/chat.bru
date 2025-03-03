@@ -6,6 +6,17 @@ meta {
 
 post {
   url: http://localhost:8080/api/chat
-  body: none
+  body: json
   auth: none
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZhdGltZS5zZXZpbGdlbjNAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDEwMjY2OTAsImV4cCI6MTc0MTAzMDI5MH0.ryXUJlTC-iDSiIIQHnCACJndY6lcPYcQMCOYFh2pUWY
+}
+
+body:json {
+  {
+    "message": "Hello! How are you?",
+    "chatId": 0
+  }
 }

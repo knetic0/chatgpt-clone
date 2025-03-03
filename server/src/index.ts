@@ -8,9 +8,9 @@ import { instanceToPlain } from "class-transformer";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Chat } from "./entity/chat";
-import OpenAI from "openai";
 import { Message } from "./entity/message";
 import cors from "cors";
+import axios from "axios";
 
 const app = express();
 app.use(cors());
@@ -28,8 +28,6 @@ const PORT = process.env.SERVER_PORT || 3000;
 AppDataSource.initialize()
     .then(() => {
         console.info("Database connected!");
-
-        const openai = new OpenAI();
 
         const router = express.Router();
 
@@ -89,9 +87,8 @@ AppDataSource.initialize()
             res.status(200).send(response);
         })
 
-        router.post("/chat/:chatId", jwtMiddleware, async (req, res) => {
-            const { chatId } = req.params;
-            const { message } = req.body;
+        router.post("/chat", jwtMiddleware, async (req, res) => {
+            const { chatId, message } = req.body;
 
             const queryRunner = AppDataSource.createQueryRunner();
             await queryRunner.connect();
@@ -117,15 +114,12 @@ AppDataSource.initialize()
                     chat = await AppDataSource.getRepository(Chat).save(chat);
                 }
 
-                const completion = await openai.chat.completions.create({
-                    model: "gpt-4o-mini",
-                    messages: [
-                        { role: "user", content: message }
-                    ],
-                    store: true
-                })
+                const response = (await axios.post("http://localhost:11434/api/generate", {
+                    model: "deepseek-r1:14b",
+                    prompt: message,
+                    stream: false
+                })).data.response;
 
-                const response = completion.choices[0].message.content;
                 const _message = AppDataSource.getRepository(Message).create({
                     chat,
                     message: message ?? "",
@@ -134,14 +128,15 @@ AppDataSource.initialize()
                 
                 chat.messages.push(_message);
                 await AppDataSource.getRepository(Chat).save(chat);
+                await AppDataSource.getRepository(Message).save(_message);
                 
                 await queryRunner.commitTransaction();
 
                 const result = new SuccessResult("Message sent successfully!", _message);
                 res.status(200).send(result);
-            } catch(err) {
+            } catch(err:any) {
                 await queryRunner.rollbackTransaction();
-                const response = new FailureResult("An error occurred while processing your request");
+                const response = new FailureResult(err.message);
                 res.status(500).send(response);
             } finally {
                 await queryRunner.release();
