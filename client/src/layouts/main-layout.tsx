@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { BlockUI } from "primereact/blockui";
 
 export default function MainLayout() {
-    const [blockUI, setBlockUI] = useState<boolean>(false);
+    const [blockUI, setBlockUI] = useState<boolean>(true);
 
     const navigate = useNavigate();
 
@@ -29,6 +29,7 @@ export default function MainLayout() {
 
     return (
         <BlockUI blocked={blockUI} fullScreen template={blockUITemplate} style={{backgroundColor: 'transparent'}}>
+            
             <Outlet />
         </BlockUI>
     )

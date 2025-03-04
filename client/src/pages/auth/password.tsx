@@ -3,6 +3,7 @@ import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
 import { useEffect } from "react";
 import { useNavigate, useOutletContext } from "react-router";
+import { Password as PasswordInput } from "primereact/password";
 
 interface PasswordOutletContext {
     email: string;
@@ -18,6 +19,7 @@ export default function Password() {
     const navigate = useNavigate();
 
     const handleEdit = () => {
+        setPassword("");
         navigate("/login/identifier")
     }
 
@@ -37,7 +39,7 @@ export default function Password() {
                 <Button link severity="contrast" label="Edit" className="absolute top-0 right-0 text-md text-black-alpha-90" onClick={handleEdit} />
             </div>
             <FloatLabel>
-                <InputText className="w-full" id="password" value={password} onChange={(e:React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
+                <PasswordInput feedback={false} inputClassName="w-full" className="w-full" id="password" value={password} onChange={(e:React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
                 <label htmlFor="password">Password</label>
             </FloatLabel>
             <Button loading={isLoggingIn} severity="contrast" label="Continue" onClick={handleSubmitLogin} />

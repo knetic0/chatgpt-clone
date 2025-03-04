@@ -82,7 +82,7 @@ AppDataSource.initialize()
             res.status(200).send(response);
         })
 
-        router.post("/token-check", jwtMiddleware, async (req, res) => {
+        router.post("/auth/token-check", jwtMiddleware, async (req, res) => {
             const response = new SuccessResult("Token is valid");
             res.status(200).send(response);
         })
